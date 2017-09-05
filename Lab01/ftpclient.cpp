@@ -168,19 +168,20 @@ int main(int argc , char *argv[])
 
     std::cout << strReply << std::endl;
     std::cout << "I am here now." << std::endl;
+	
     if ((directory = opendir("/")))
     {
-	while((entry = readdir(directory)) != NULL)
-	{
-		printf("%s\n", entry->d_name);
-	}	
-	closedir(directory);
+		while((entry = readdir(directory)) != NULL)
+		{
+			printf("%s\n", entry->d_name);
+		}	
+		closedir(directory);
     }
 
     else
     {
-	perror("");
-	return EXIT_FAILURE;
+		perror("");
+		return EXIT_FAILURE;
     }
     
     strReply = request_reply(sockpi, "PASV\r\n");
