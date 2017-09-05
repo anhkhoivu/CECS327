@@ -27,9 +27,10 @@ iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 #include <sys/types.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <dirent.h>
 
 #define BUFFER_LENGTH 2048
-#define WAITING_TIME 1000
+#define WAITING_TIME 100000
 
 /**
 *   Creates a connection to the server via a socket and returns that socket
@@ -133,6 +134,8 @@ int main(int argc , char *argv[])
 {
     int sockpi;
     std::string strReply;
+    DIR * directory;
+    struct dirent * entry;
     
     //TODO  arg[1] can be a dns or an IP address.
     if (argc > 2)
@@ -160,13 +163,29 @@ int main(int argc , char *argv[])
     // Hint: implement a function that set the SP in passive mode and accept commands.
 
     std::cout << strReply << std::endl;
-
-    strReply = request_reply(sockpi, "PASV\r\n");
+    std::cout << "I Have reached this point." << std::endl;
+    strReply = request_reply(sockpi, "LIST\r\n");
 
     std::cout << strReply << std::endl;
+    std::cout << "I am here now." << std::endl;
+    if ((directory = opendir("/")))
+    {
+	while((entry = readdir(directory)) != NULL)
+	{
+		printf("%s\n", entry->d_name);
+	}	
+	closedir(directory);
+    }
 
+    else
+    {
+	perror("");
+	return EXIT_FAILURE;
+    }
     
-    
+    strReply = request_reply(sockpi, "PASV\r\n");
+    std::cout << strReply << std::endl;
+
     usleep(500);
     strReply = request_reply(sockpi, "QUIT\r\n");
     std::cout << strReply << std::endl;
